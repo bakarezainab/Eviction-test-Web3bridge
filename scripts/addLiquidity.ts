@@ -35,7 +35,7 @@ const thresholdBalance = await thresholdContract.balanceOf(liquidityProvider)
 const kucoinBalance =await kucoinContract.balanceOf(liquidityProvider)
 
 
-console.log("\n\n---------------before 😁---------------")
+console.log("\n\n---------------The Initial Balance-----------------")
 
 console.log("before balance for impersonated threshhold " + ethers.formatUnits(thresholdBalance,18 ))
 console.log("before balance for impersonated Kucoin " + ethers.formatUnits(kucoinBalance, 6 ))  
@@ -46,16 +46,15 @@ console.log("before balance for impersonated Kucoin " + ethers.formatUnits(kucoi
 console.log("\n\n---------------add liquidity 🥃-------------------")
 
 
-
 const amountADesired = ethers.parseUnits("40000000", 18)
 const amountBDesired = ethers.parseUnits("50000", 6)
 
 
 //min amount
-const amountAMin = amountADesired * 95n/100n
+const amountAMin = amountADesired * 90n/100n
 //or
 // const amountAMin = amountADesired - ethers.parseUnits("1000000", 18)
-const amountBMin = amountBDesired * 95n/100n
+const amountBMin = amountBDesired * 90n/100n
 
 
 console.log("\n\n---------------processing ⌛---------------")
@@ -66,15 +65,15 @@ console.log("\n\n---------------processing ⌛---------------")
 
                                        
 // function approve(address spender, uint value) external returns (bool);
-console.log("threshold approve....")
+console.log("..............Approve threshold............")
 const txAApprove = await thresholdContract.connect(impersonateSigner).approve(uniswapRouter, amountADesired)
 await txAApprove.wait()
 
-console.log("kucoin approve....")
+console.log("..............Approve kucoin....")
 const txBApprove = await kucoinContract.connect(impersonateSigner).approve(uniswapRouter, amountBDesired)
 await txBApprove.wait()
 
-const deadline = await helpers.time.latest() + 700
+const deadline = await helpers.time.latest() + 1000
 
 const addLiquidity = await uniswapRouterContract.connect(impersonateSigner).addLiquidity(
     thresholdAddress,
@@ -88,12 +87,10 @@ const addLiquidity = await uniswapRouterContract.connect(impersonateSigner).addL
 addLiquidity.wait()
 
 
-
-
 const thresholdBalanceAfter = await thresholdContract.balanceOf(liquidityProvider)
 const kucoinBalanceAfter =await kucoinContract.balanceOf(liquidityProvider)
 
-console.log("\n\n---------------after ⏲---------------")
+console.log("\n\n---------------Balance After ⏲---------------")
 
 //5) get output
 console.log("after balance for impersonated threshhold " + ethers.formatUnits(thresholdBalanceAfter,18 ))
